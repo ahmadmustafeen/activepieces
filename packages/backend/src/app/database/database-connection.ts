@@ -30,6 +30,8 @@ import { ChatbotEntity } from '../chatbot/chatbot.entity'
 import { ProjectMemberEntity } from '../ee/project-members/project-member.entity'
 import { getEdition } from '../helper/secret-helper'
 import { ApEdition } from '@activepieces/shared'
+import { GoalEntity } from '../valuehub/goals/goal/goal.entity'
+import { TaskEntity } from '../valuehub/tasks/task/task.entity'
 
 const databaseType = system.get(SystemProp.DB_TYPE)
 
@@ -42,6 +44,8 @@ function getEntities() {
         FileEntity,
         FlagEntity,
         FlowEntity,
+        GoalEntity,
+        TaskEntity,
         FlowVersionEntity,
         FlowRunEntity,
         ProjectEntity,

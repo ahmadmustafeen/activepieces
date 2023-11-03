@@ -26,6 +26,7 @@ import { stepFileModule } from './flows/step-file/step-file.module'
 import { chatbotModule } from './chatbot/chatbot.module'
 import { rbacAuthMiddleware } from './ee/authentication/rbac-auth-middleware'
 import { userModule } from './user/user.module'
+import { valuehubModule } from './valuehub/valuehub-module'
 
 export const setupApp = async (): Promise<FastifyInstance> => {
     const app = fastify({
@@ -110,6 +111,7 @@ export const setupApp = async (): Promise<FastifyInstance> => {
     await app.register(flowWorkerModule)
     await app.register(pieceModule)
     await app.register(flowInstanceModule)
+    await app.register(valuehubModule)
     await app.register(flowRunModule)
     await app.register(webhookModule)
     await app.register(appConnectionModule)
