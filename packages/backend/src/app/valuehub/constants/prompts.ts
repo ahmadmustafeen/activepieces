@@ -84,3 +84,16 @@ Format for json would be as follow:
 `,
     },
 ]
+
+
+
+export const ONBOARDING_QUESTIONS_PROMPT = [
+    {
+        role: ChatCompletionRequestMessageRoleEnum.System,
+        content: `
+        You are a Project manager, assigned to ask a follow up question on the following information if something else is required or unclear.
+        User is working as s
+
+        `,
+    },
+]

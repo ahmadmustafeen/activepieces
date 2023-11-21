@@ -48,4 +48,14 @@ export const taskController = async (app: any) => {
         res.status(201).send(resp.data)
         
     })
+
+    app.post('/onboarding/ai', async (req: any, res: any)=>{
+        const  history  = req.body
+        
+        const resp = await taskService.onboardingTask(history)
+        if (resp.error) return res.status(501).send(resp.message)
+
+        res.status(201).send(resp.data)
+        
+    })
 }

@@ -21,7 +21,7 @@ export type itaskdata =  {
     type: string
 }
 
-const configuration =  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
+const configuration =  new Configuration({ apiKey: "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" })
 const openai =  new OpenAIApi(configuration)
 
 const autoRegeneratedTaskPrompt = (tasksPrompt: string, goal: { title: string, description: string, id: string }) => `
@@ -29,6 +29,15 @@ Already Created Task are: <tasks>${tasksPrompt}</tasks>.
 
 Title of Goal: ${goal.title}. Description of Goal: ${goal.description}. Goal Id is ${goal.id}`
 
+
+
+const onAskingQuestion = (history: { content: string }[]) => `
+    You are a Project manager, assigned to ask a follow up question on the following information if something else is required or unclear.
+    User will give answer to these question, please create a follow up question if something from these question is unclear.
+    Question 1: ${ history[0].content } Answer: ${ history[1].content } //n 
+    Question 2: ${ history[2].content } Answer: ${ history[3].content } //n
+    Question 3: ${ history[4].content } Answer: ${ history[5].content } //n
+    `
 export const taskService = {
     
 
@@ -113,6 +122,17 @@ export const taskService = {
         }
         
         return { error: false, data: [], message: 'Successfully created and added Taks.' }
+        
+    },
+
+
+    async onboardingTask(history: any) {
+
+        
+        const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', messages: [ { role: 'assistant', content: onAskingQuestion(history.history) }, { role: ChatCompletionRequestMessageRoleEnum.User, content: 'Create a followup question based on previous questions and answer' }] })
+        const data = completion.data.choices[0]?.message?.content
+        
+        return { error: false, data: data }
         
     },
 
