@@ -21,7 +21,7 @@ export type itaskdata =  {
     type: string
 }
 
-const configuration =  new Configuration({ apiKey: "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" })
+const configuration =  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
 const openai =  new OpenAIApi(configuration)
 
 const autoRegeneratedTaskPrompt = (tasksPrompt: string, goal: { title: string, description: string, id: string }) => `
