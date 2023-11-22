@@ -53,9 +53,8 @@ export const taskController = async (app: any) => {
         const  history  = req.body
         
         const resp = await taskService.onboardingTask(history)
-        if (resp.error) return res.status(501).send(resp.message)
-
-        res.status(201).send(resp.data)
+        // if (resp.error) return res.status(501).send(resp)
+        res.status(201).send(resp)
         
     })
 }

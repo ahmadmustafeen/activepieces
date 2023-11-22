@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { ChatCompletionRequestMessageRoleEnum, Configuration, OpenAIApi } from 'openai'
 import { databaseConnection } from '../../../database/database-connection'
@@ -125,15 +126,16 @@ export const taskService = {
         
     },
 
-
     async onboardingTask(history: any) {
-
-        
-        const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', messages: [ { role: 'assistant', content: onAskingQuestion(history.history) }, { role: ChatCompletionRequestMessageRoleEnum.User, content: 'Create a followup question based on previous questions and answer' }] })
-        const data = completion.data.choices[0]?.message?.content
-        
-        return { error: false, data: data }
-        
+        try {
+            const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', messages: [ { role: 'assistant', content: onAskingQuestion(history.history) }, { role: ChatCompletionRequestMessageRoleEnum.User, content: 'Create a followup question based on previous questions and answer' }] })
+            const data = completion.data.choices[0]?.message?.content
+            return { error: false, data, message: '' }
+        }
+        catch (error: any) {
+            console.log('error==>', error)
+            return { error: false, data: null, message: error.message }
+        }
     },
 
     async autoRegeneratedTaskList(goalId: string) {
