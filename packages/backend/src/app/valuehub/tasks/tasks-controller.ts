@@ -57,4 +57,13 @@ export const taskController = async (app: any) => {
         res.status(201).send(resp)
         
     })
+
+    app.post('/onboarding/ai/goals', async (req: any, res: any)=>{
+        const  history  = req.body
+        
+        const resp = await taskService.onAIGeneratedGoal(history)
+        // if (resp.error) return res.status(501).send(resp)
+        res.status(201).send(resp.data)
+        
+    })
 }

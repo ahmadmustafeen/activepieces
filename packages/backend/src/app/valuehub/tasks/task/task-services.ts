@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/quotes */
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { ChatCompletionRequestMessageRoleEnum, Configuration, OpenAIApi } from 'openai'
@@ -5,6 +7,7 @@ import { databaseConnection } from '../../../database/database-connection'
 import { PROMPT_MESSAGES, REGENERATE_PROMPT_MESSAGES } from '../../constants/prompts'
 import { goalService } from '../../goals/goal/goal.service'
 import { TaskEntity } from './task.entity'
+import { categoryService } from '../../category/category.service'
 
 const taskRepo = databaseConnection.getRepository(TaskEntity)
 
@@ -39,6 +42,23 @@ const onAskingQuestion = (history: { content: string }[]) => `
     Question 2: ${ history[2].content } Answer: ${ history[3].content } //n
     Question 3: ${ history[4].content } Answer: ${ history[5].content } //n
     `
+
+
+
+const CreateGoalPrompt = (history: { content: string }[]) => `
+Acting as a Project manager, you will be given the following set of questions and their response, by using this information, you will generate 200 words goal description and title.
+We also need categories such as Artifcial Intelligence, Mobile Development etc etc.
+The goal would be what the user wants to achieve and you will be giving the information in a proper format:
+
+Format of response will be in json format: with key title: sting, description as string[] and category as string[]
+
+
+These are the information
+Question 1: ${ history[0].content } Answer: ${ history[1].content } //n 
+Question 2: ${ history[2].content } Answer: ${ history[3].content } //n
+Question 3: ${ history[4].content } Answer: ${ history[5].content } //n
+`
+
 export const taskService = {
     
 
@@ -134,6 +154,33 @@ export const taskService = {
         }
         catch (error: any) {
             console.log('error==>', error)
+            return { error: false, data: null, message: error.message }
+        }
+    },
+
+    async onAIGeneratedGoal(history: any) {
+        try {
+            const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', messages: [ { role: 'assistant', content: CreateGoalPrompt(history.history) }, { role: ChatCompletionRequestMessageRoleEnum.User, content: 'Create the goal' }] })
+            const data = completion.data.choices[0]?.message?.content
+            const parsedData = JSON.parse(data ?? '')
+            const { title = '', category: categories = [], description = [] } = parsedData
+
+            const parsedCategory: string[] = []
+
+            for (const category of categories) {
+                const Category =  await categoryService.fetchCategoryByTitle(category.toLowerCase())
+                if (Category) parsedCategory.push(Category.id)
+
+                else {
+                    const createdCategory = await categoryService.create({ title: category.toLowerCase() })
+                    if (createdCategory?.id) parsedCategory.push(createdCategory.id)
+                }
+            }
+
+            const goalData = await goalService.create({ title, description: JSON.stringify(description), category: JSON.stringify(parsedCategory), createdBy: 'ahmad' })
+            return { error: false, data: goalData, message: '' }
+        }
+        catch (error: any) {
             return { error: false, data: null, message: error.message }
         }
     },

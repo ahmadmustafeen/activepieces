@@ -32,6 +32,7 @@ import { getEdition } from '../helper/secret-helper'
 import { ApEdition } from '@activepieces/shared'
 import { GoalEntity } from '../valuehub/goals/goal/goal.entity'
 import { TaskEntity } from '../valuehub/tasks/task/task.entity'
+import { CategoryEntity } from '../valuehub/category/category.entity'
 
 const databaseType = system.get(SystemProp.DB_TYPE)
 
@@ -46,6 +47,7 @@ function getEntities() {
         FlowEntity,
         GoalEntity,
         TaskEntity,
+        CategoryEntity,
         FlowVersionEntity,
         FlowRunEntity,
         ProjectEntity,

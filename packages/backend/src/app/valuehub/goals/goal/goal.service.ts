@@ -9,14 +9,16 @@ type igoaldata =  {
     createdBy: string
     title: string
     description: string
+    category: string
 }
 
 export const goalService = {
     async create(goaldata: igoaldata) {
-        const { createdBy, title, description } = goaldata
+        const { createdBy, title, description, category } = goaldata
         const goal = {
             createdBy,
             title,
+            category,
             description,
         }
         return goalRepo.save(goal)
@@ -43,5 +45,6 @@ export const goalService = {
     async fetchGoalById(id: string) {
         return goalRepo.findOne({ where: { id } })
     },
+
     
 }

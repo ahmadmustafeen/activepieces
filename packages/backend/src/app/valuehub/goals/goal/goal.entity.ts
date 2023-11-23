@@ -5,12 +5,13 @@ export type GoalSchema = {
     createdBy: string
     title: string
     description: string
+    category: string
     createdAt: Date
     updatedAt: Date
 }
 
 export const GoalEntity = new EntitySchema<GoalSchema>({
-    name: 'goal',
+    name: 'valuehub_goal',
     columns: {
         id: {
             type: Number,
@@ -23,6 +24,9 @@ export const GoalEntity = new EntitySchema<GoalSchema>({
             type: String,
         },
         description: {
+            type: String,
+        },
+        category: {
             type: String,
         },
     },
