@@ -63,9 +63,9 @@ Return value of complexity, colourTag and dueDate as empty string.
 Status should be "TODO" and type should be "BUG" and priority should be "3".
 Fill out title and description.
 
-${COMPLEXITY_CALCULATION_MESSAGE}
+${COMPLEXITY_CALCULATION_MESSAGE} /n /n
 
-Format for json would be as follow:
+Format of json would be as follow:
 
 <json>
     [{

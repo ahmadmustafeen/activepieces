@@ -9,29 +9,59 @@ const goalRepo = databaseConnection.getRepository(GoalEntity)
 type igoaldata =  {
     createdBy: string
     title: string
-    description: string
-    category: string
+    description: string[]
+    category: string[]
 }
 
 export const goalService = {
     async create(goaldata: igoaldata) {
-        const { createdBy, title, description, category } = goaldata
+        const { createdBy, title, description = [], category: categories } = goaldata
+      
+        const parsedCategory: string[] = []
+
+        for (const category of categories) {
+            const Category =  await categoryService.fetchCategoryByTitle(category.toLowerCase())
+            if (Category) parsedCategory.push(Category.id)
+
+            else {
+                const createdCategory = await categoryService.create({ title: category.toLowerCase() })
+                if (createdCategory?.id) parsedCategory.push(createdCategory.id)
+            }
+        }
+
         const goal = {
             createdBy,
             title,
-            category,
-            description,
+            category: JSON.stringify(parsedCategory),
+            description: JSON.stringify(description),
         }
+
+        
         return goalRepo.save(goal)
     },
     
     async update(id: number, goaldata: igoaldata) {
-        const { createdBy, title, description } = goaldata
+        const { createdBy, title, description, category: categories = [] } = goaldata
+
+        const parsedCategory: string[] = []
+
+        for (const category of categories) {
+            const Category =  await categoryService.fetchCategoryByTitle(category.toLowerCase())
+            if (Category) parsedCategory.push(Category.id)
+
+            else {
+                const createdCategory = await categoryService.create({ title: category.toLowerCase() })
+                if (createdCategory?.id) parsedCategory.push(createdCategory.id)
+            }
+        }
+
         const goal = {
             createdBy,
             title,
-            description,
+            description: description?.length ?  JSON.stringify(description) : undefined,
+            category: parsedCategory.length ? JSON.stringify(parsedCategory) : undefined,
         }
+
         return goalRepo.update(id, goal)
     },
 
@@ -48,7 +78,7 @@ export const goalService = {
                 const categoryData = await categoryService.fetchCategoryById(category)
                 if (categoryData) categoryArray.push(categoryData)
             }
-            updatedGoal.push({ ...eachGoal, category: categoryArray })
+            updatedGoal.push({ ...eachGoal, category: categoryArray, description: JSON.parse(eachGoal.description) })
         }
         return updatedGoal
         
@@ -62,8 +92,7 @@ export const goalService = {
             const categoryData = await categoryService.fetchCategoryById(category)
             if (categoryData) categoryArray.push(categoryData)
         }
-        goal.description =  JSON.parse(goal.description)
-        return { ...goal, category: categoryArray }
+        return { ...goal, category: categoryArray, description: JSON.parse(goal.description) }
     },
 
     
