@@ -1,22 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
-import { categoryService } from '../category/category.service'
 import { goalService } from './goal/goal.service'
 
 export const goalController = async (app: any) => {
     app.get('/', async (req: any, res: any) => {
         const goals = await goalService.fetchAllGoals()
-        const updatedGoal = []
-        for (const eachGoal of goals) {
-            const categoryArray = []
-            for (const category of JSON.parse(eachGoal.category)) {
-                const categoryData = await categoryService.fetchCategoryById(category)
-                if (categoryData) categoryArray.push(categoryData)
-            }
-            updatedGoal.push({ ...eachGoal, category: categoryArray })
-        }
-        res.status(200).send({ message: 'Fetched goals successfully', data: updatedGoal.reverse() })
+        res.status(200).send({ message: 'Fetched goals successfully', data: goals.reverse() })
     })
     app.post('/', async (req: any, res: any) => {
         const goal = await goalService.create(req.body)

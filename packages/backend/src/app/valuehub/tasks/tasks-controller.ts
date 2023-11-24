@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 
+import { goalService } from '../goals/goal/goal.service'
 import {  taskService } from './task/task-services'
 
 
@@ -14,7 +15,8 @@ export const taskController = async (app: any) => {
     app.get('/', async (req: any, res: any) => {
         const { goalId } = req.query
         const task = await taskService.fetchAllTask(goalId)
-        res.status(200).send({ message: 'Fetched tasks successfully', data: task.reverse() })
+        const goal = await goalService.fetchGoalById(goalId)
+        res.status(200).send({ message: 'Fetched tasks successfully', data: { tasks: task.reverse(), goal  } })
     })
     app.post('/', async (req: any, res: any) => {
         const task = await taskService.create(req.body)

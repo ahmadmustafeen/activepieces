@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { databaseConnection } from '../../../database/database-connection'
+import { categoryService } from '../../category/category.service'
 import { GoalEntity } from './goal.entity'
 
 const goalRepo = databaseConnection.getRepository(GoalEntity)
@@ -39,11 +40,30 @@ export const goalService = {
     },
 
     async fetchAllGoals() {
-        return goalRepo.find()
+        const goals = await goalRepo.find()
+        const updatedGoal = []
+        for (const eachGoal of goals) {
+            const categoryArray = []
+            for (const category of JSON.parse(eachGoal.category)) {
+                const categoryData = await categoryService.fetchCategoryById(category)
+                if (categoryData) categoryArray.push(categoryData)
+            }
+            updatedGoal.push({ ...eachGoal, category: categoryArray })
+        }
+        return updatedGoal
+        
     },
 
     async fetchGoalById(id: string) {
-        return goalRepo.findOne({ where: { id } })
+        const goal = await goalRepo.findOne({ where: { id } })
+        if (!goal) return null
+        const categoryArray = []
+        for (const category of JSON.parse(goal.category)) {
+            const categoryData = await categoryService.fetchCategoryById(category)
+            if (categoryData) categoryArray.push(categoryData)
+        }
+        goal.description =  JSON.parse(goal.description)
+        return { ...goal, category: categoryArray }
     },
 
     
