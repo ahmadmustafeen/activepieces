@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { apId, SignUpRequest, User, UserId, UserMeta, UserStatus } from '@activepieces/shared'
 import { passwordHasher } from '../authentication/lib/password-hasher'
 import { databaseConnection } from '../database/database-connection'
@@ -53,5 +55,12 @@ export const userService = {
         const { email } = query
         const user = await userRepo.createQueryBuilder().where('LOWER(email) LIKE LOWER(:email)', { email: `${email}` }).getOne()
         return user || null
+    },
+
+
+    async getUser(query: { id: string }) {
+        const { id } = query
+        const user = await userRepo.findOne({ where: { id } })
+        return user
     },
 }

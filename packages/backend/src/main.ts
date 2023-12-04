@@ -101,7 +101,7 @@ The application started on ${system.get(SystemProp.FRONTEND_URL)}, as specified 
             const verified = await verifyLicenseKey({ license: key })
             if (!verified) {
                 logger.error('[ERROR]: License key is not valid. Please contact sales@activepieces.com')
-                process.exit(1)
+                // process.exit(1)
             }
         }
     }

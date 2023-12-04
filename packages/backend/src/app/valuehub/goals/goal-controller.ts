@@ -23,4 +23,9 @@ export const goalController = async (app: any) => {
         const goal = goalService.delete(id)
         res.status(200).send({ message: 'Goal is deleted successfully', data: goal })
     })
+
+    app.post('/new', async (req: any, res: any)=>{
+        const goal  = await goalService.createGoal(req.body)
+        res.status(201).send(goal)
+    })
 }

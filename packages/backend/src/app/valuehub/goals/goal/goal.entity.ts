@@ -5,6 +5,7 @@ export type GoalSchema = {
     createdBy: string
     title: string
     description: string
+    raw_description: string
     category: string
     createdAt: Date
     updatedAt: Date
@@ -24,6 +25,9 @@ export const GoalEntity = new EntitySchema<GoalSchema>({
             type: String,
         },
         description: {
+            type: String,
+        },
+        raw_description: {
             type: String,
         },
         category: {

@@ -11,7 +11,6 @@ import { TaskEntity } from './task.entity'
 
 const taskRepo = databaseConnection.getRepository(TaskEntity)
 
-
 export type itaskdata =  {
     id: string
     goalId: number
@@ -25,7 +24,7 @@ export type itaskdata =  {
     type: string
 }
 
-const configuration =  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
+const configuration =  new Configuration({ apiKey: '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' })
 const openai =  new OpenAIApi(configuration)
 
 const autoRegeneratedTaskPrompt = (tasksPrompt: string, goal: { title: string, description: string, id: string }) => `
@@ -129,9 +128,8 @@ export const taskService = {
             const goal = await goalService.fetchGoalById(goalId)
             if (!goal) return { error: true, data: null, message: 'Goal Id not found' }
         
-            const parsedDescription = goal.description.join(" ")
-            const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', messages: [ ...PROMPT_MESSAGES, { role: ChatCompletionRequestMessageRoleEnum.User, content: `Title of Goal: ${goal.title}. Description of Goal: ${parsedDescription}. Goal Id is ${goalId}` }] })
-            console.log({ task: completion.data.choices[0]?.message?.content})
+            const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', messages: [ ...PROMPT_MESSAGES, { role: ChatCompletionRequestMessageRoleEnum.User, content: `Title of Goal: ${goal.title}. Description of Goal: ${goal.description}. Goal Id is ${goalId}` }] })
+            console.log({ task: completion.data.choices[0]?.message?.content })
             
             const tasks = JSON.parse(completion.data.choices[0]?.message?.content ?? '')
         
@@ -208,7 +206,7 @@ export const taskService = {
             `
         }
 
-        const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', max_tokens: 2000, messages: [ ...REGENERATE_PROMPT_MESSAGES, { role: ChatCompletionRequestMessageRoleEnum.User, content: autoRegeneratedTaskPrompt(tasksPrompt, { title: goal.title, description: goal.description.join(" "), id: goalId }) }] })
+        const completion = await openai.createChatCompletion({  model: 'gpt-3.5-turbo', max_tokens: 2000, messages: [ ...REGENERATE_PROMPT_MESSAGES, { role: ChatCompletionRequestMessageRoleEnum.User, content: autoRegeneratedTaskPrompt(tasksPrompt, { title: goal.title, description: goal.description, id: goalId }) }] })
         const tasks = JSON.parse(completion.data.choices[0]?.message?.content ?? '')
 
         if (tasks?.tasks?.length) {
