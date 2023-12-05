@@ -33,7 +33,7 @@ type icreateGoal = {
     description: string
     raw_description: string
 }
-const configuration =  new Configuration({ apiKey: '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' })
+const configuration =  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
 const openai =  new OpenAIApi(configuration)
 
 export const goalService = {

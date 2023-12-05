@@ -33,6 +33,7 @@ import { ApEdition } from '@activepieces/shared'
 import { GoalEntity } from '../valuehub/goals/goal/goal.entity'
 import { TaskEntity } from '../valuehub/tasks/task/task.entity'
 import { CategoryEntity } from '../valuehub/category/category.entity'
+import { OnboardingEntity } from '../valuehub/onboarding/onboarding.entity'
 
 const databaseType = system.get(SystemProp.DB_TYPE)
 
@@ -46,6 +47,7 @@ function getEntities() {
         FlagEntity,
         FlowEntity,
         GoalEntity,
+        OnboardingEntity,
         TaskEntity,
         CategoryEntity,
         FlowVersionEntity,

@@ -7,7 +7,6 @@ import { databaseConnection } from '../../../database/database-connection'
 import { PROMPT_MESSAGES, REGENERATE_PROMPT_MESSAGES } from '../../constants/prompts'
 import { goalService } from '../../goals/goal/goal.service'
 import { TaskEntity } from './task.entity'
-// import { categoryService } from '../../category/category.service'
 
 const taskRepo = databaseConnection.getRepository(TaskEntity)
 
@@ -24,7 +23,7 @@ export type itaskdata =  {
     type: string
 }
 
-const configuration =  new Configuration({ apiKey: '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' })
+const configuration =  new Configuration({ apiKey: process.env.OPENAI_API_KEY })
 const openai =  new OpenAIApi(configuration)
 
 const autoRegeneratedTaskPrompt = (tasksPrompt: string, goal: { title: string, description: string, id: string }) => `
